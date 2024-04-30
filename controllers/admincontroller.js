@@ -3,13 +3,8 @@ const Faculty = require("../models/Faculty")
 const Student = require("../models/Student")
 const Admin = require("../models/Admin")
 
-
-
 const FacultyCourseMapping = require("../models/FacultyCourseMapping")
 const StudentCourseMapping = require("../models/StudentCourseMapping")
-
-
-     
 
 const checkadminlogin = async (request, response) => 
 {
@@ -56,6 +51,22 @@ const checkadminlogin = async (request, response) =>
        response.status(500).send(error.message);
      }
    };
+
+   const countData = async (req, res) => {
+     try {
+       const studentCount = await Student.countDocuments();
+       const courseCount = await Course.countDocuments();
+       const facultyCount = await Faculty.countDocuments();
+       res.json({
+         studentCount,
+         courseCount,
+         facultyCount
+       });
+     } catch (error) {
+       res.status(500).send(error.message);
+     }
+   };
+   
    
  const addstudent = async (request, response) =>{
      try
@@ -111,32 +122,32 @@ const deletestudent = async (request,response) =>{
      }
 };
 
-const updatestudent = async (req,res) =>
-{
-     try
-     {
-        const input = request.body;
-        const studentid = input.studentid;
-        const student = await Student.findOne({ studentid })
-        if(!student)
-        {
-          response.status(200).send('Student not found with the provided student id')
-        }
-        for( const key in input)
-        {
-          if(key !=='studentid' && input[key])
-          {
-               student[key] = input[key];
-          }
-        }
-        await student.save();
-        response.status(200).send('Student Data Updated Successfully')
+const updatestudent = async (req, res) => {
+     try {
+       const input = req.body;
+       const studentid = input.studentid;
+       const student = await Student.findOne({ studentid });
+   
+       if (!student) {
+         return res.status(404).send('Student not found with the provided student id');
+       }
+       for (const key in input) {
+         if (key !== 'studentid' && input[key] !== undefined) {
+           student[key] = input[key];
+         }
+       }
+   
+       await student.save();
+   
+       res.status(200).send('Student Data Updated Successfully');
+     } 
+     catch (e)
+      {
+    
+       res.status(500).send(e.message);
      }
-     catch(e)
-     {
-          response.status(500).send(e.message);
-     }
-}
+   };
+   
  
 
 const addcourse = async(request,response) =>{
@@ -197,6 +208,32 @@ const deletecourse = async (request,response) =>{
      }
 };
 
+const updatecourse = async (req, res) => {
+     try {
+       const input = req.body;
+       const coursecode = input.coursecode;
+       const course = await Course.findOne({ coursecode });
+   
+       if (!course) {
+         return res.status(404).send('Course not found with the provided Course Code');
+       }
+       for (const key in input) {
+         if (key !== 'coursecode' && input[key] !== undefined) {
+          course[key] = input[key];
+         }
+       }
+   
+       await course.save();
+   
+       res.status(200).send('Course Data Updated Successfully');
+     } 
+     catch (e)
+      {
+    
+       res.status(500).send(e.message);
+     }
+   };
+
 const addfaculty = async (request, response) =>{
      try
      {
@@ -252,6 +289,32 @@ const deletefaculty = async (request,response) =>{
      }
 };
 
+const updatefaculty = async (req, res) => {
+     try {
+       const input = req.body;
+       const facultyid = input.facultyid;
+       const faculty = await Faculty.findOne({ facultyid });
+   
+       if (!faculty) {
+         return res.status(404).send('Faculty not found with the provided Faculty ID');
+       }
+       for (const key in input) {
+         if (key !== 'facultyid' && input[key] !== undefined) {
+          faculty[key] = input[key];
+         }
+       }
+   
+       await faculty.save();
+   
+       res.status(200).send('Faculty Data Updated Successfully');
+     } 
+     catch (e)
+      {
+    
+       res.status(500).send(e.message);
+     }
+   };
+
 //FacultyCourseMap
 const mapFacultyCourse = async (request, response) => {
      const { facultyid, coursecode } = request.body;  
@@ -274,24 +337,26 @@ const mapFacultyCourse = async (request, response) => {
 
  
  //StudentCourseMap
-const mapStudentCourse = async (request, response) => {
-     const { studentid, coursecode } = request.body;  
-     try {
-         // Check if the mapping already exists
-         const existingMapping = await StudentCourseMapping.findOne({ studentid, coursecode });
-         if (existingMapping) {
-             return response.status(200).json({ message: 'Mapping already exists' });
-         }
+// const mapStudentCourse = async (request, response) => {
+//      const { studentid, coursecode } = request.body;  
+//      try {
+//          // Check if the mapping already exists
+//          const existingMapping = await StudentCourseMapping.findOne({ studentid, coursecode });
+//          if (existingMapping) {
+//              return response.status(200).json({ message: 'Mapping already exists' });
+//          }
  
-         // Create a new mapping
-         const newMapping = new StudentCourseMapping({ studentid, coursecode });
-         await newMapping.save();
+//          // Create a new mapping
+//          const newMapping = new StudentCourseMapping({ studentid, coursecode });
+//          await newMapping.save();
  
-         response.status(201).json({ message: 'Mapping created successfully' });
-     } catch (error) {
-         response.status(500).json({ message: error.message });
-     }
- };
+//          response.status(201).json({ message: 'Mapping created successfully' });
+//      } catch (error) {
+//          response.status(500).json({ message: error.message });
+//      }
+//  };
+
+ 
 
 //  const analysis = async (req, res) => {
 //      try 
@@ -307,4 +372,5 @@ const mapStudentCourse = async (request, response) => {
 //      }
 //    };   
 
-module.exports = {checkadminlogin,changeadminpwd,addstudent,viewstudent,deletestudent,updatestudent,addcourse,viewcourses,deletecourse,addfaculty,viewfaculty,deletefaculty,mapFacultyCourse,mapStudentCourse}
+
+module.exports = {checkadminlogin,changeadminpwd,countData,addstudent,viewstudent,deletestudent,updatestudent,addcourse,viewcourses,deletecourse,updatecourse,addfaculty,viewfaculty,deletefaculty,updatefaculty,mapFacultyCourse}

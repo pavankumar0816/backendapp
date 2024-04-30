@@ -3,7 +3,6 @@ const Event = require("../models/Event")
 const Assessment = require("../models/Assessment")
 const Cour = require("../models/Course")
 const StudentAssessment = require("../models/StudentAssessment")
-const Register = require("../models/RegisteredCourses")
 
 const StudentCourseMapping = require("../models/StudentCourseMapping");
 
