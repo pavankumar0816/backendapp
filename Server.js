@@ -3,13 +3,23 @@ const mongoose = require("mongoose")
 const cors = require("cors")
 // require("dotenv").config()
 
-const dburl = "mongodb://localhost:27017/lmsproject"
-// const dburl = process.env.mongodburl
+// const dburl = "mongodb://localhost:27017/lmsproject"
+// // const dburl = process.env.mongodburl
+// mongoose.connect(dburl).then(() => {
+//     console.log("Connected to DB Successfully")
+// }).catch((err) => {
+//     console.log(err.message)
+// });
+
+
+// MongoDb Atlas Connection
+
+const dburl = "mongodb+srv://admin:admin@cluster0.k5qndjs.mongodb.net/lmsproject?retryWrites=true&w=majority&appName=Cluster0"
 mongoose.connect(dburl).then(() => {
-    console.log("Connected to DB Successfully")
+    console.log("Connected to MongoDb Atlas Successfully")
 }).catch((err) => {
     console.log(err.message)
-});
+})
 
 const app = express()
 app.use(cors())
