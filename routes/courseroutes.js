@@ -4,7 +4,7 @@
 // const csvtojson = require('csvtojson')
 // const multer = require('multer');
 
-// // Add the data 
+// // Add the data
 // courserouter.post('/',async(request,response)=>{
 //     try
 //     {
@@ -18,20 +18,19 @@
 //     }
 // });
 
-// // get all the data 
+// // get all the data
 
 // courserouter.get('/',async (request,response)=>{
 //     try
 //     {
 //         const course = await courses.find();
-//         response.json(course); 
+//         response.json(course);
 //     }
 //     catch(e)
 //     {
 //         response.status(400).json({message:e.message})
 //     }
 // })
-
 
 // // get by ID
 // async function getCourses(request,response,next)
@@ -121,4 +120,3 @@
 // })
 
 // module.exports = courserouter
-

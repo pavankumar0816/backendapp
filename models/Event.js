@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
   course: {
-        type: String,
-        required: true,
-      },
+    type: String,
+    required: true,
+  },
   topic: {
     type: String,
     required: true,
@@ -23,6 +23,6 @@ const eventSchema = new mongoose.Schema({
   },
 });
 
-const event = mongoose.model('Event', eventSchema);
+const event = mongoose.model("Event", eventSchema);
 
 module.exports = event;

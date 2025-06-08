@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const assessmentSchema = new mongoose.Schema({
   course: {
@@ -18,5 +18,5 @@ const assessmentSchema = new mongoose.Schema({
     required: true,
   },
 });
-const assessment = mongoose.model('Assessment',assessmentSchema);
+const assessment = mongoose.model("Assessment", assessmentSchema);
 module.exports = assessment;

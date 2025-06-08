@@ -1,18 +1,20 @@
-const mongoose = require('mongoose')
-
+const mongoose = require("mongoose");
 
 const facultyCourseMappingSchema = new mongoose.Schema({
-  facultyid: {
-    type: Number,
+  faculty: {
+    type: mongoose.Schema.Types.ObjectId, // Reference to Faculty
+    ref: "faculty",
     required: true,
-},
-coursecode: {
-    type: String,
+  },
+  course: {
+    type: mongoose.Schema.Types.ObjectId, // Reference to Course
+    ref: "course",
     required: true,
-},
-
+  },
 });
 
-const facultymapcourse = mongoose.model('FacultyCourseMapping', facultyCourseMappingSchema);
-
-module.exports = facultymapcourse;
+const FacultyCourseMapping = mongoose.model(
+  "FacultyCourseMapping",
+  facultyCourseMappingSchema,
+);
+module.exports = FacultyCourseMapping;
