@@ -12,26 +12,14 @@ This is the **Backend** of the **Student Learning Management System (LMS)**, bui
 **Project Structure**
 (https://github.com/user-attachments/assets/d0ed112d-118b-48ba-8f5f-d62c35c4de0f)
 
-backend/
-├── controllers/         # Business logic separated by roles
-│   ├── admincontroller.js
-│   ├── studentcontroller.js
-│   └── facultycontroller.js
-├── models/              # Mongoose schemas
-│   ├── Admin.js
-│   ├── Student.js
-│   ├── Faculty.js
-│   ├── Course.js
-│   ├── Assessment.js
-│   ├── FacultyCourseMapping.js
-│   └── StudentAssessment.js
-├── routes/              # Express route handlers
-│   ├── adminroutes.js
-│   ├── studentroutes.js
-│   └── facultyroutes.js
-├── media/               # Folder for uploaded files (assignments, content)
-├── .env                 # Environment variables (MongoDB URL, PORT)
-└── server.js            # Main server entry point
+**backend/**
+
+controllers/         # Business logic separated by roles
+ models/              # Mongoose schemas 
+routes/              # Express route handlers
+media/               # Folder for uploaded files (assignments, content)
+.env                 # Environment variables (MongoDB URL, PORT)
+Server.js            # Main server entry point
 
 **Environment Variables (.env)**
 mongodburl=mongodb://localhost:27017/lmsproject
