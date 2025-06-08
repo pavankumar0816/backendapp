@@ -14,12 +14,12 @@ This is the **Backend** of the **Student Learning Management System (LMS)**, bui
 
 **backend/**
 
-controllers/         # Business logic separated by roles
- models/              # Mongoose schemas 
-routes/              # Express route handlers
-media/               # Folder for uploaded files (assignments, content)
-.env                 # Environment variables (MongoDB URL, PORT)
-Server.js            # Main server entry point
+**controllers/**: Business logic separated by roles
+ **models/**:Mongoose schemas 
+**routes/**:Express route handlers
+**media/**: Folder for uploaded files (assignments, content)
+**.env**: Environment variables (MongoDB URL, PORT)
+**Server.js**: Main server entry point
 
 **Environment Variables (.env)**
 mongodburl=mongodb://localhost:27017/lmsproject
