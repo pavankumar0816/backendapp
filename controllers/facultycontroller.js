@@ -221,12 +221,17 @@ const assessmentfile = async (req, res) => {
   });
 };
 
-const viewstudentassessment = async (req, res) => {
+const viewStudentAssessment = async (req, res) => {
   try {
-    const studentassessment = await StudentAssessment.find();
-    res.status(200).json(studentassessment);
+    // Populate student & course details
+    const assessments = await StudentAssessment.find()
+      .populate("student", "studentid studentname") // Only these fields from Student .populate() joins data from another collection — just like a foreign key join in SQL, but in MongoDB style.
+      .populate("courses", "coursecode coursename"); // Only these from Course
+
+    res.status(200).json(assessments);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error fetching student assessments:", error);
+    res.status(500).send("Error fetching student assessments");
   }
 };
 
@@ -238,11 +243,11 @@ const viewstudentassessmentfile = async (req, res) => {
   fs.readFile(filepath, (err, data) => {
     if (err) {
       console.error(err);
-      return res.status(500).send("Error reading image file");
+      return res.status(500).send("Error reading file");
     }
 
     const ext = path.extname(filename).toLowerCase();
-    let contentFile = "application/octet-stream"; // Default to octet-stream (binary data)
+    let contentType = "application/octet-stream";
 
     if (ext === ".png") {
       contentType = "image/png";
@@ -252,9 +257,12 @@ const viewstudentassessmentfile = async (req, res) => {
       contentType = "application/pdf";
     } else if (ext === ".txt") {
       contentType = "text/plain";
+    } else if (ext === ".doc" || ext === ".docx") {
+      contentType =
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     }
 
-    res.setHeader("Content-Type", contentFile);
+    res.setHeader("Content-Type", contentType);
     res.send(data);
   });
 };
@@ -269,6 +277,6 @@ module.exports = {
   uploadassessment,
   assessmentfile,
   viewMappedCourses,
-  viewstudentassessment,
+  viewStudentAssessment,
   viewstudentassessmentfile,
 };

@@ -14,8 +14,8 @@ facultyrouter.get(
 facultyrouter.get("/viewcourses", facultycontroller.viewcourses);
 
 facultyrouter.post("/uploadcontent", facultycontroller.uploadcontent);
-// facultyrouter.get("/viewcontent",facultycontroller.viewcontent)
-// facultyrouter.get("/contentfile/:filename",facultycontroller.contentfile)
+facultyrouter.get("/viewcontent", facultycontroller.viewcontent);
+facultyrouter.get("/contentfile/:filename", facultycontroller.contentfile);
 
 facultyrouter.post("/uploadassessment", facultycontroller.uploadassessment);
 
@@ -26,7 +26,7 @@ facultyrouter.get(
 
 facultyrouter.get(
   "/viewstudentassessment",
-  facultycontroller.viewstudentassessment,
+  facultycontroller.viewStudentAssessment,
 );
 facultyrouter.get(
   "/viewstudentassessmentfile/:filename",

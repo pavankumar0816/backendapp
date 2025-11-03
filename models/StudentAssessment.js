@@ -1,14 +1,21 @@
 const mongoose = require("mongoose");
 
-const studentassessmentSchema = new mongoose.Schema({
-  file: {
+const StudentAssessmentSchema = new mongoose.Schema({
+  student: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+
+  file: { type: String, required: true },
+  description: { type: String },
+  saveAs: { type: String },
+  uploadedBy: {
     type: String,
-    required: true,
+    enum: ["faculty", "student"],
+    default: "student",
   },
 });
 
-const studentassessment = mongoose.model(
+const StudentAssessment = mongoose.model(
   "StudentAssessment",
-  studentassessmentSchema,
+  StudentAssessmentSchema,
 );
-module.exports = studentassessment;
+module.exports = StudentAssessment;

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const facultyCourseMappingSchema = new mongoose.Schema({
   faculty: {
-    type: mongoose.Schema.Types.ObjectId, // Reference to Faculty
+    type: mongoose.Schema.Types.ObjectId, // Reference to Faculty ==> This field will store the _id of a document from the faculty collection, so we can link them.
     ref: "faculty",
     required: true,
   },
@@ -18,3 +18,7 @@ const FacultyCourseMapping = mongoose.model(
   facultyCourseMappingSchema,
 );
 module.exports = FacultyCourseMapping;
+
+// Embedded array → one-to-many only.
+
+// Mapping collection with ObjectId + ref → supports many-to-many.

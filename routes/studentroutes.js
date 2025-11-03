@@ -3,8 +3,18 @@
 const studentcontroller = require("../controllers/studentcontroller");
 
 const express = require("express");
-const student = require("../models/Student");
+const multer = require("multer");
 const studentrouter = express.Router();
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./media/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
 
 studentrouter.post("/checkstudentlogin", studentcontroller.checkstudentlogin);
 studentrouter.get(
@@ -18,13 +28,16 @@ studentrouter.post(
   studentcontroller.registerCourse,
 );
 
-studentrouter.get("/viewcontent", studentcontroller.viewcontent);
-studentrouter.get("/contentfile/:filename", studentcontroller.contentfile);
+studentrouter.get("/viewcontent", studentcontroller.displaycontent);
+studentrouter.get(
+  "/contentfile/:filename",
+  studentcontroller.displaycontentfile,
+);
 
 studentrouter.get("/viewassessment", studentcontroller.viewassessment);
 studentrouter.get(
   "/assessmentfile/:filename",
-  studentcontroller.assessmentfile,
+  studentcontroller.studentassessmentfile,
 );
 
 studentrouter.get(
@@ -32,6 +45,10 @@ studentrouter.get(
   studentcontroller.viewStudentMappedCourses,
 );
 
-studentrouter.post("/uploadassessment", studentcontroller.uploadassessment);
+studentrouter.post(
+  "/uploadstudentassessment",
+  upload.single("file"),
+  studentcontroller.uploadstudentassessment,
+);
 
 module.exports = studentrouter;

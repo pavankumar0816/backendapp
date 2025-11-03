@@ -82,7 +82,7 @@ const viewstudent = async (request, response) => {
 
 const deletestudent = async (request, response) => {
   try {
-    const studentid = request.params.studentid;
+    const studentid = request.params.studentid; // params is an object inside request that holds route parameters (values you pass in the URL).
     const student = await Student.findOne({ studentid: studentid });
     if (student != null) {
       await Student.deleteOne({ studentid: studentid });
@@ -170,6 +170,7 @@ const updatecourse = async (req, res) => {
         .status(404)
         .send("Course not found with the provided Course Code");
     }
+
     for (const key in input) {
       if (key !== "coursecode" && input[key] !== undefined) {
         course[key] = input[key];
@@ -177,7 +178,6 @@ const updatecourse = async (req, res) => {
     }
 
     await course.save();
-
     res.status(200).send("Course Data Updated Successfully");
   } catch (e) {
     res.status(500).send(e.message);

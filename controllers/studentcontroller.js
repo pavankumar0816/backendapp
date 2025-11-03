@@ -69,41 +69,62 @@ const registerCourse = async (req, res) => {
   }
 };
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./media/"); // Destination folder
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname); // File naming convention
-  },
-});
-
-const upload = multer({ storage: storage }).single("file");
-
-const uploadassessment = async (req, res) => {
+const uploadstudentassessment = async (req, res) => {
   try {
-    upload(req, res, async function (err) {
-      if (err) {
-        console.error(err);
-        return res.status(500).send(err.message);
-      }
+    console.log("Received body:", req.body);
+    console.log("Received file:", req.file);
 
-      const fileName = req.file ? req.file.filename : undefined; // Extracting file name
+    const { studentId, courseId, description, saveAs } = req.body;
 
-      const newContent = new StudentAssessment({
-        file: fileName, // Save only the file name
-      });
+    if (!req.file) {
+      return res.status(400).send("No file uploaded");
+    }
 
-      await newContent.save();
-      res.status(200).send("Assessment Uploaded Successfully");
+    // ✅ Find student and course using Cour (not Course)
+    const student =
+      (await Student.findOne({ _id: studentId })) ||
+      (await Student.findOne({ studentid: studentId }));
+
+    const course =
+      (await Cour.findOne({ _id: courseId })) ||
+      (await Cour.findOne({ coursecode: courseId }));
+
+    if (!student || !course) {
+      return res.status(400).send("Invalid studentId or courseId");
+    }
+
+    // ✅ Create and save assessment
+    const newAssessment = new StudentAssessment({
+      student: student._id,
+      courses: [course._id],
+      file: req.file.filename,
+      description,
+      saveAs,
+      uploadedBy: "student",
     });
+
+    await newAssessment.save();
+    console.log("Saved Assessment:", newAssessment);
+    res.status(200).send("Assessment uploaded successfully");
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error.message);
+    console.error("Error uploading assessment:", error);
+    res.status(500).send("Error uploading assessment");
   }
 };
 
-const viewcontent = async (req, res) => {
+const studentassessmentfile = async (req, res) => {
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, "../media", filename);
+
+  res.sendFile(filepath, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(404).send("File not found");
+    }
+  });
+};
+
+const displaycontent = async (req, res) => {
   try {
     const content = await Event.find();
     res.status(200).json(content);
@@ -112,7 +133,7 @@ const viewcontent = async (req, res) => {
   }
 };
 
-const contentfile = async (req, res) => {
+const displaycontentfile = async (req, res) => {
   const filename = req.params.filename;
   const filepath = path.join(__dirname, "../media", filename);
   console.log(filepath);
@@ -150,35 +171,6 @@ const viewassessment = async (req, res) => {
   }
 };
 
-const assessmentfile = async (req, res) => {
-  const filename = req.params.filename;
-  const filepath = path.join(__dirname, "../media", filename);
-  console.log(filepath);
-
-  fs.readFile(filepath, (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Error reading image file");
-    }
-
-    const ext = path.extname(filename).toLowerCase();
-    let contentFile = "application/octet-stream"; // Default to octet-stream (binary data)
-
-    if (ext === ".png") {
-      contentType = "image/png";
-    } else if (ext === ".jpg" || ext === ".jpeg") {
-      contentType = "image/jpeg";
-    } else if (ext === ".pdf") {
-      contentType = "application/pdf";
-    } else if (ext === ".txt") {
-      contentType = "text/plain";
-    }
-
-    res.setHeader("Content-Type", contentFile);
-    res.send(data);
-  });
-};
-
 const viewStudentMappedCourses = async (request, response) => {
   try {
     const mappings = await StudentCourseMapping.find();
@@ -211,10 +203,10 @@ module.exports = {
   studentprofile,
   viewcourses,
   registerCourse,
-  viewcontent,
-  contentfile,
+  displaycontent,
+  displaycontentfile,
   viewassessment,
-  assessmentfile,
+  studentassessmentfile,
   viewStudentMappedCourses,
-  uploadassessment,
+  uploadstudentassessment,
 };

@@ -12,11 +12,11 @@
 
 **backend/**
 
-**controllers/:** Business logic separated by roles 
-**models/:** Mongoose schemas 
-**routes/:** Express route handlers 
-**media/:** Folder for uploaded files (assignments, content) 
-**.env:** Environment variables (MongoDB URL, PORT) 
+**controllers/:** Business logic separated by roles
+**models/:** Mongoose schemas
+**routes/:** Express route handlers
+**media/:** Folder for uploaded files (assignments, content)
+**.env:** Environment variables (MongoDB URL, PORT)
 **Server.js:** Main server entry point
 
 Environment Variables (.env) mongodburl=mongodb://localhost:27017/lmsproject PORT=2024
