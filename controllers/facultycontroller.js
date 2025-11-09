@@ -6,6 +6,7 @@ const Assessment = require("../models/Assessment");
 const StudentAssessment = require("../models/StudentAssessment");
 
 const FacultyCourseMapping = require("../models/FacultyCourseMapping");
+const FacultyStudentMapping = require("../models/FacultyStudentMapping");
 
 const multer = require("multer");
 const path = require("path");
@@ -50,41 +51,72 @@ const viewcourses = async (request, response) => {
   }
 };
 
-const viewMappedCourses = async (request, response) => {
+const viewMappedCourses = async (req, res) => {
   try {
-    const { facultyid } = request.params; // Faculty ID from request parameters
+    const { facultyid } = req.params;
+
+    if (!facultyid) {
+      return res.status(400).json({ message: "Faculty ID is required" });
+    }
+
+    const faculty = await Faculty.findOne({ facultyid });
+    if (!faculty) {
+      return res.status(404).json({ message: "Faculty not found" });
+    }
+
+    const mappedCourses = await FacultyCourseMapping.find({
+      faculty: faculty._id,
+    }).populate({
+      path: "course",
+      select: "coursename coursecode",
+    });
+
+    if (!mappedCourses.length) {
+      return res
+        .status(404)
+        .json({ message: "No courses mapped for this faculty" });
+    }
+
+    const courses = mappedCourses
+      .map((mapping) => mapping.course)
+      .filter((course) => course != null);
+
+    if (!courses.length) {
+      return res.status(404).json({ message: "No valid courses found" });
+    }
+
+    res.status(200).json({ mappedCourses: courses });
+  } catch (err) {
+    console.error("Error in viewMappedCourses:", err);
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
+
+const viewMappedStudents = async (request, response) => {
+  try {
+    const { facultyid } = request.params;
 
     if (!facultyid) {
       return response.status(400).json({ message: "Faculty ID is required" });
     }
 
-    // Find faculty by facultyid
-    const faculty = await Faculty.findOne({ facultyid }); // Match facultyid
-
+    const faculty = await Faculty.findOne({ facultyid });
     if (!faculty) {
       return response.status(404).json({ message: "Faculty not found" });
     }
 
-    // Find mapped courses for the given faculty
-    const mappedCourses = await FacultyCourseMapping.find({
+    const mappedStudents = await FacultyStudentMapping.find({
       faculty: faculty._id,
-    }) // Match by ObjectId
-      .populate("course"); // Fetch course details
+    }).populate("student");
 
-    if (!mappedCourses.length) {
-      return response
-        .status(404)
-        .json({ message: "No courses mapped for this faculty" });
-    }
+    const students = mappedStudents.map((mapping) => mapping.student);
 
-    // Extract and send course details
-    const courses = mappedCourses.map((mapping) => mapping.course);
-
-    return response.status(200).json({ mappedCourses: courses });
-  } catch (error) {
+    // Return 200 always, even if no mapped students
+    return response.status(200).json({ mappedStudents: students });
+  } catch (e) {
     return response
       .status(500)
-      .json({ message: "Server Error", error: error.message });
+      .json({ message: "Server Error", error: e.message });
   }
 };
 
@@ -277,6 +309,7 @@ module.exports = {
   uploadassessment,
   assessmentfile,
   viewMappedCourses,
+  viewMappedStudents,
   viewStudentAssessment,
   viewstudentassessmentfile,
 };

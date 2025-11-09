@@ -23,6 +23,7 @@ adminrouter.delete("/deletefaculty/:facultyid", admincontroller.deletefaculty);
 adminrouter.put("/updatefaculty", admincontroller.updatefaculty);
 
 adminrouter.post("/facultycoursemapping", admincontroller.mapFacultyCourse);
+adminrouter.post("/facultystudentmapping", admincontroller.mapFacultyStudent);
 // adminrouter.post("/studentcoursemapping",admincontroller.mapStudentCourse)
 
 module.exports = adminrouter;

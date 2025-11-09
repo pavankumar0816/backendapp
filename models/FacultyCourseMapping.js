@@ -8,7 +8,7 @@ const facultyCourseMappingSchema = new mongoose.Schema({
   },
   course: {
     type: mongoose.Schema.Types.ObjectId, // Reference to Course
-    ref: "course",
+    ref: "Course",
     required: true,
   },
 });

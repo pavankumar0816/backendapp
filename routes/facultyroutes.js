@@ -25,6 +25,11 @@ facultyrouter.get(
 );
 
 facultyrouter.get(
+  "/viewmappedstudents/:facultyid",
+  facultycontroller.viewMappedStudents,
+);
+
+facultyrouter.get(
   "/viewstudentassessment",
   facultycontroller.viewStudentAssessment,
 );

@@ -4,7 +4,7 @@ const Student = require("../models/Student");
 const Admin = require("../models/Admin");
 
 const FacultyCourseMapping = require("../models/FacultyCourseMapping");
-const StudentCourseMapping = require("../models/StudentCourseMapping");
+const FacultyStudentMapping = require("../models/FacultyStudentMapping");
 
 const checkadminlogin = async (request, response) => {
   try {
@@ -46,6 +46,7 @@ const countData = async (req, res) => {
     const studentCount = await Student.countDocuments();
     const courseCount = await Course.countDocuments();
     const facultyCount = await Faculty.countDocuments();
+
     res.json({
       studentCount,
       courseCount,
@@ -302,6 +303,49 @@ const mapFacultyCourse = async (request, response) => {
   }
 };
 
+const mapFacultyStudent = async (req, res) => {
+  try {
+    const { facultyid, studentid } = req.body;
+
+    if (!facultyid || !studentid) {
+      return res
+        .status(400)
+        .json({ message: "Faculty ID and Student ID are required" });
+    }
+
+    const faculty = await Faculty.findOne({ facultyid: facultyid });
+    if (!faculty) {
+      return res.status(404).json({ message: "Faculty not found" });
+    }
+
+    const student = await Student.findOne({ studentid: studentid });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const existingMapping = await FacultyStudentMapping.findOne({
+      faculty: faculty._id,
+      student: student._id,
+    });
+
+    if (existingMapping) {
+      return res.status(409).json({ message: "Mapping already exists" });
+    }
+
+    const newMapping = new FacultyStudentMapping({
+      faculty: faculty._id,
+      student: student._id,
+    });
+
+    await newMapping.save();
+    return res.status(201).json({ message: "Mapping created successfully" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
+  }
+};
+
 module.exports = {
   checkadminlogin,
   changeadminpwd,
@@ -319,4 +363,5 @@ module.exports = {
   deletefaculty,
   updatefaculty,
   mapFacultyCourse,
+  mapFacultyStudent,
 };
